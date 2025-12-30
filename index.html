@@ -4,260 +4,71 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Afton Robotics Pinboard</title>
-
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
-
 <style>
-:root {
-  --primary: #7c5cff;
-  --primary-hover: #6848e3;
-  --secondary: #ede9ff;
-}
-
-body {
-  font-family: Arial, sans-serif;
-  background: #f4f2ff;
-  margin: 0;
-  user-select: none;
-}
-
-header {
-  background: var(--primary);
-  color: white;
-  padding: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 15px;
-  flex-wrap: wrap;
-}
-
-header img {
-  max-width: 50px;
-  border-radius: 6px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-}
-
-header h1 {
-  margin: 0;
-  font-size: 1.8rem;
-}
-
-header p {
-  width: 100%;
-  text-align: center;
-  margin-top: 6px;
-  font-size: 1rem;
-}
-
-section.about {
-  background: white;
-  max-width: 800px;
-  margin: 20px auto;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(124,92,255,0.25);
-}
-
-.add-pin {
-  max-width: 800px;
-  margin: 10px auto;
-  display: flex;
-  gap: 10px;
-}
-
-.add-pin input {
-  flex: 1;
-  padding: 10px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-}
-
-.add-pin button {
-  background: var(--primary);
-  color: white;
-  border: none;
-  padding: 10px 18px;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-.add-pin button:hover {
-  background: var(--primary-hover);
-}
-
-.pinboard {
-  position: relative;
-  max-width: 1100px;
-  height: 600px;
-  margin: 20px auto;
-  background: #ddd8ff;
-  border-radius: 12px;
-  padding: 20px;
-  overflow: hidden;
-}
-
-.pin {
-  position: absolute;
-  width: 320px;
-  background: #fff8a1;
-  border-radius: 10px;
-  box-shadow: 0 6px 14px rgba(0,0,0,0.2);
-  cursor: grab;
-  display: flex;
-  flex-direction: column;
-  transition: 0.3s;
-}
-
-.pin-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 6px 8px;
-  border-bottom: 1px solid #ccc;
-  font-weight: bold;
-}
-
-.mac-dots {
-  display: flex;
-  gap: 6px;
-}
-
-.mac-dots span {
-  width: 11px;
-  height: 11px;
-  border-radius: 50%;
-  cursor: pointer;
-}
-
-.red { background: #ff5f57; }
-.yellow { background: #ffbd2e; }
-.green { background: #28c840; }
-
-.pin-content {
-  padding: 8px;
-  word-wrap: break-word;
-}
-
-.comments {
-  display: none;
-  flex-direction: column;
-  gap: 4px;
-  padding: 6px;
-  max-height: 120px;
-  overflow-y: auto;
-}
-
-.comment {
-  background: #f3efff;
-  border-radius: 6px;
-  padding: 4px 6px;
-  font-size: 0.85rem;
-}
-
-.comment-input {
-  display: none;
-  gap: 4px;
-  padding: 6px;
-}
-
-.comment-input input {
-  flex: 1;
-  padding: 4px;
-  font-size: 0.85rem;
-}
-
-.comment-input button {
-  background: var(--primary);
-  color: white;
-  border: none;
-  padding: 4px 8px;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.comment-input button:hover {
-  background: var(--primary-hover);
-}
-
-footer {
-  background: var(--primary);
-  color: white;
-  text-align: center;
-  padding: 12px;
-  margin-top: 20px;
-  font-size: 0.85rem;
-  border-top-left-radius: 10px;
-  border-top-right-radius: 10px;
-}
-
-.pin-footer {
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  padding: 6px;
-  border-top: 1px solid #ccc;
-}
-
-.pin-footer button {
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 1.1rem;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.pin-footer button:hover {
-  color: var(--primary);
-}
-
-.collapsed .pin-content,
-.collapsed .comments,
-.collapsed .comment-input {
-  display: none !important;
-}
-
-.arrow {
-  transition: transform 0.2s;
-}
-
-.arrow.up {
-  transform: rotate(180deg);
-}
+:root { --primary:#7c5cff; --primary-hover:#6848e3; --secondary:#ede9ff; }
+body { font-family: Arial; background:#f4f2ff; margin:0; user-select:none; }
+header { background:var(--primary); color:white; padding:20px; display:flex; align-items:center; justify-content:center; gap:15px; flex-wrap:wrap; }
+header img { max-width:50px; border-radius:6px; box-shadow:0 2px 6px rgba(0,0,0,0.3); }
+header h1 { margin:0; font-size:1.8rem; }
+header p { width:100%; text-align:center; margin-top:6px; font-size:1rem; }
+section.about { background:white; max-width:800px; margin:20px auto; padding:20px; border-radius:10px; box-shadow:0 4px 10px rgba(124,92,255,0.25); }
+.add-pin { max-width:800px; margin:10px auto; display:flex; gap:10px; }
+.add-pin input { flex:1; padding:10px; border-radius:6px; border:1px solid #ccc; }
+.add-pin button { background:var(--primary); color:white; border:none; padding:10px 18px; border-radius:6px; cursor:pointer; }
+.add-pin button:hover { background:var(--primary-hover); }
+.pinboard { position:relative; max-width:1100px; height:600px; margin:20px auto; background:#ddd8ff; border-radius:12px; padding:20px; overflow:hidden; }
+.pin { position:absolute; width:320px; background:#fff8a1; border-radius:10px; box-shadow:0 6px 14px rgba(0,0,0,0.2); cursor:grab; display:flex; flex-direction:column; transition:.3s; }
+.pin-header { display:flex; align-items:center; justify-content:space-between; padding:6px 8px; border-bottom:1px solid #ccc; font-weight:bold; }
+.mac-dots { display:flex; gap:6px; }
+.mac-dots span { width:11px; height:11px; border-radius:50%; cursor:pointer; }
+.red { background:#ff5f57; }
+.yellow { background:#ffbd2e; }
+.green { background:#28c840; }
+.pin-content { padding:8px; word-wrap:break-word; }
+.comments { display:none; flex-direction:column; gap:4px; padding:6px; max-height:120px; overflow-y:auto; }
+.comment { background:#f3efff; border-radius:6px; padding:4px 6px; font-size:0.85rem; }
+.comment-input { display:none; gap:4px; padding:6px; }
+.comment-input input { flex:1; padding:4px; font-size:0.85rem; }
+.comment-input button { background:var(--primary); color:white; border:none; padding:4px 8px; border-radius:4px; cursor:pointer; }
+.comment-input button:hover { background:var(--primary-hover); }
+footer { background:var(--primary); color:white; text-align:center; padding:12px; margin-top:20px; font-size:0.85rem; border-top-left-radius:10px; border-top-right-radius:10px; }
+.pin-footer { display:flex; justify-content:space-around; align-items:center; padding:6px; border-top:1px solid #ccc; }
+.pin-footer button { background:none; border:none; cursor:pointer; font-size:1.1rem; display:flex; align-items:center; gap:4px; }
+.pin-footer button:hover { color:var(--primary); }
+.collapsed .pin-content,.collapsed .comments,.collapsed .comment-input{display:none !important;}
+.arrow { transition: transform 0.2s; }
+.arrow.up { transform:rotate(180deg); }
 </style>
 </head>
-
 <body>
 
 <header>
-  <img src="https://preview.redd.it/g51e2aqi9jq91.jpg?width=320&crop=smart&auto=webp&s=65630ae994603220964ad7a0366ed95254a7f43a" alt="Afton Logo">
-  <h1>Afton Robotics Pinboard</h1>
-  <p>Share ideas, notes, and thoughts with the Afton Robotics community</p>
+<img src="https://preview.redd.it/g51e2aqi9jq91.jpg?width=320&crop=smart&auto=webp&s=65630ae994603220964ad7a0366ed95254a7f43a" alt="Afton Logo">
+<h1>Afton Robotics Pinboard</h1>
+<p>Share ideas, notes, and thoughts with the Afton Robotics community</p>
 </header>
 
 <section class="about">
-  <h2>About Me</h2>
-  <p>Hello, I’m William Afton. I build animatronics that push the boundaries of science and imagination. Some people call me a villain; I prefer to think of myself as a visionary. Every creation tells a story, and every experiment is a step closer to perfection. This pinboard is where I keep my thoughts, designs, and plans—ideas that most wouldn’t dare write down. Welcome, and take a look inside my mind.</p>
+<h2>About Me</h2>
+<p>Hello, I’m William Afton. I build animatronics that push the boundaries of science and imagination. Some people call me a villain; I prefer to think of myself as a visionary. Every creation tells a story, and every experiment is a step closer to perfection. This pinboard is where I keep my thoughts, designs, and plans—ideas that most wouldn’t dare write down. Welcome, and take a look inside my mind.</p>
 </section>
 
 <section class="add-pin">
-  <input id="pinText" placeholder="Write a pin...">
-  <input id="pinUser" placeholder="Username">
-  <button>Add Pin</button>
+<input id="pinText" placeholder="Write a pin...">
+<input id="pinUser" placeholder="Username">
+<button>Add Pin</button>
 </section>
 
 <section class="pinboard" id="pinboard"></section>
 
 <footer>
-  © 2026 Afton Robotics, LLC, William Afton. Logo Credit to galaxyfire1997 on Reddit
+© 2026 Afton Robotics, LLC, William Afton. Logo Credit to galaxyfire1997 on Reddit
 </footer>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
-import { getFirestore, collection, addDoc, getDocs, query, orderBy, updateDoc, doc, arrayUnion } 
-from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
+import { getFirestore, collection, addDoc, doc, onSnapshot, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
 
 // Firebase config
 const firebaseConfig = {
@@ -275,53 +86,36 @@ const db = getFirestore(app);
 const board = document.getElementById("pinboard");
 const isOwner = true;
 
-/* ===== Add Pin Function ===== */
+// Add Pin
 async function addPin() {
   const text = document.getElementById("pinText").value.trim();
   const user = document.getElementById("pinUser").value.trim() || "Anonymous";
   if (!text) return;
-
-  try {
-    const docRef = await addDoc(collection(db, "pins"), {
-      text,
-      user,
-      likes: 0,
-      dislikes: 0,
-      comments: [],
-      timestamp: new Date()
-    });
-
-    addPinToBoard(text, user, 0, 0, docRef.id, []);
-    document.getElementById("pinText").value = "";
-  } catch (err) {
-    console.error("Error adding pin:", err);
-    alert("Failed to add pin: " + err.message);
-  }
-}
-
-window.addPin = addPin;
-
-/* ===== Load Pins ===== */
-async function loadPins() {
-  const q = query(collection(db, "pins"), orderBy("timestamp"));
-  const snapshot = await getDocs(q);
-  snapshot.forEach(docSnap => {
-    const data = docSnap.data();
-    addPinToBoard(data.text, data.user, data.likes, data.dislikes, docSnap.id, data.comments || []);
+  const docRef = await addDoc(collection(db,"pins"),{
+    text,user,likes:0,dislikes:0,comments:[],timestamp:new Date()
   });
+  document.getElementById("pinText").value="";
 }
+window.addPin = addPin;
+document.querySelector(".add-pin button").addEventListener("click", addPin);
 
-/* ===== Add Pin to Board ===== */
-function addPinToBoard(text, user, likes, dislikes, id, commentsArr) {
+// Real-time listener
+onSnapshot(collection(db,"pins"), snapshot=>{
+  board.innerHTML=""; // Clear board
+  snapshot.docs.forEach(docSnap=>{
+    const d = docSnap.data();
+    addPinToBoard(d.text,d.user,d.likes,d.dislikes,docSnap.id,d.comments||[]);
+  });
+});
+
+// Add Pin DOM
+function addPinToBoard(text,user,likes,dislikes,id,commentsArr){
   const pin = document.createElement("div");
-  pin.className = "pin";
-  
-  // Ensure pin is inside board bounds
-  const boardRect = board.getBoundingClientRect();
-  pin.style.top = Math.random() * (boardRect.height - 150) + "px";
-  pin.style.left = Math.random() * (boardRect.width - 320) + "px";
-
-  pin.innerHTML = `
+  pin.className="pin";
+  const br = board.getBoundingClientRect();
+  pin.style.top = Math.random()*(br.height-150)+"px";
+  pin.style.left = Math.random()*(br.width-320)+"px";
+  pin.innerHTML=`
     <div class="pin-header">
       <div class="mac-dots">
         <span class="red" onclick="deletePin(this)"></span>
@@ -334,112 +128,88 @@ function addPinToBoard(text, user, likes, dislikes, id, commentsArr) {
     <div class="comments"></div>
     <div class="comment-input">
       <input placeholder="Add comment...">
-      <button onclick="addComment(this, '${id}')">Post</button>
+      <button onclick="addComment(this,'${id}')">Post</button>
     </div>
     <div class="pin-footer">
       <button><i class="fab fa-twitter"></i></button>
       <button><i class="fas fa-share"></i></button>
       <button onclick="toggleCommentBox(this)"><i class="fas fa-comment"></i></button>
-      <button onclick="like(this, '${id}')"><i class="fas fa-thumbs-up"></i> <span>${likes}</span></button>
-      <button onclick="dislike(this, '${id}')"><i class="fas fa-thumbs-down"></i> <span>${dislikes}</span></button>
+      <button onclick="like(this,'${id}')"><i class="fas fa-thumbs-up"></i> <span>${likes}</span></button>
+      <button onclick="dislike(this,'${id}')"><i class="fas fa-thumbs-down"></i> <span>${dislikes}</span></button>
       <button onclick="toggleComments(this)"><i class="fas fa-chevron-down arrow"></i></button>
     </div>
   `;
-
   const commentsDiv = pin.querySelector(".comments");
-  commentsArr.forEach(c => {
-    const div = document.createElement("div");
-    div.className = "comment";
-    div.textContent = `${c.user}: ${c.text}`;
+  commentsArr.forEach(c=>{
+    const div=document.createElement("div");
+    div.className="comment";
+    div.textContent=`${c.user}: ${c.text}`;
     commentsDiv.appendChild(div);
   });
-
   board.appendChild(pin);
   makeDraggable(pin);
 }
 
-/* ===== Mac Dots ===== */
-function deletePin(el) { if(isOwner) el.closest(".pin").remove(); }
-function collapsePin(el) { el.closest(".pin").classList.add("collapsed"); }
-function expandPin(el) { el.closest(".pin").classList.remove("collapsed"); }
+// Mac Dots
+function deletePin(el){if(isOwner)el.closest(".pin").remove();}
+function collapsePin(el){el.closest(".pin").classList.add("collapsed");}
+function expandPin(el){el.closest(".pin").classList.remove("collapsed");}
 
-/* ===== Comments ===== */
-function toggleCommentBox(btn) {
-  const box = btn.closest(".pin").querySelector(".comment-input");
-  box.style.display = box.style.display === "flex" ? "none" : "flex";
+// Comments
+function toggleCommentBox(btn){
+  const box=btn.closest(".pin").querySelector(".comment-input");
+  box.style.display=box.style.display==="flex"?"none":"flex";
 }
-
-async function addComment(btn, id) {
-  const pin = btn.closest(".pin");
-  const input = btn.previousElementSibling;
-  const text = input.value.trim();
-  if (!text) return;
-  const user = document.getElementById("pinUser").value || "Anonymous";
-
-  const commentObj = { user, text };
-  const commentsDiv = pin.querySelector(".comments");
-  const div = document.createElement("div");
-  div.className = "comment";
-  div.textContent = `${user}: ${text}`;
+async function addComment(btn,id){
+  const pin=btn.closest(".pin");
+  const input=btn.previousElementSibling;
+  const text=input.value.trim();
+  if(!text) return;
+  const user=document.getElementById("pinUser").value||"Anonymous";
+  const commentObj={user,text};
+  const commentsDiv=pin.querySelector(".comments");
+  const div=document.createElement("div");
+  div.className="comment";
+  div.textContent=`${user}: ${text}`;
   commentsDiv.appendChild(div);
-
-  const docRef = doc(db, "pins", id);
-  await updateDoc(docRef, { comments: arrayUnion(commentObj) });
-  input.value = "";
+  const docRef=doc(db,"pins",id);
+  await updateDoc(docRef,{comments:arrayUnion(commentObj)});
+  input.value="";
+}
+function toggleComments(btn){
+  const pin=btn.closest(".pin");
+  const comments=pin.querySelector(".comments");
+  const arrow=btn.querySelector(".arrow");
+  if(comments.style.display==="flex"){comments.style.display="none"; arrow.classList.remove("up");}
+  else{comments.style.display="flex"; arrow.classList.add("up");}
 }
 
-function toggleComments(btn) {
-  const pin = btn.closest(".pin");
-  const comments = pin.querySelector(".comments");
-  const arrow = btn.querySelector(".arrow");
-
-  if (comments.style.display === "flex") {
-    comments.style.display = "none";
-    arrow.classList.remove("up");
-  } else {
-    comments.style.display = "flex";
-    arrow.classList.add("up");
-  }
+// Reactions
+async function like(btn,id){
+  const span=btn.querySelector("span");
+  const newVal=parseInt(span.textContent)+1;
+  span.textContent=newVal;
+  const docRef=doc(db,"pins",id);
+  await updateDoc(docRef,{likes:newVal});
+}
+async function dislike(btn,id){
+  const span=btn.querySelector("span");
+  const newVal=parseInt(span.textContent)+1;
+  span.textContent=newVal;
+  const docRef=doc(db,"pins",id);
+  await updateDoc(docRef,{dislikes:newVal});
 }
 
-/* ===== Reactions ===== */
-async function like(btn, id) {
-  const span = btn.querySelector("span");
-  const newVal = parseInt(span.textContent) + 1;
-  span.textContent = newVal;
-  const docRef = doc(db, "pins", id);
-  await updateDoc(docRef, { likes: newVal });
-}
-
-async function dislike(btn, id) {
-  const span = btn.querySelector("span");
-  const newVal = parseInt(span.textContent) + 1;
-  span.textContent = newVal;
-  const docRef = doc(db, "pins", id);
-  await updateDoc(docRef, { dislikes: newVal });
-}
-
-/* ===== Dragging ===== */
-function makeDraggable(pin) {
+// Dragging
+function makeDraggable(pin){
   let x,y,drag=false;
   pin.onmousedown=e=>{
     if(e.target.tagName==="BUTTON"||e.target.tagName==="I") return;
-    drag=true;
-    x=e.offsetX;
-    y=e.offsetY;
+    drag=true;x=e.offsetX;y=e.offsetY;
   };
-  document.onmousemove=e=>{
-    if(drag){
-      pin.style.left=e.pageX-x+"px";
-      pin.style.top=e.pageY-y+"px";
-    }
-  };
+  document.onmousemove=e=>{if(drag){pin.style.left=e.pageX-x+"px"; pin.style.top=e.pageY-y+"px";}};
   document.onmouseup=()=>drag=false;
 }
-
-// Load pins on page load
-loadPins();
 </script>
-
 </body>
 </html>
