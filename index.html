@@ -97,9 +97,15 @@ document.querySelector(".add-pin button").addEventListener("click", addPin);
 
 // Global functions
 window.deletePin = async function(el){
-  if(!isOwner) return;
   const pin = el.closest(".pin");
   const pinId = pin.dataset.id;
+  const pinUser = pin.dataset.user;
+  const currentUser = document.getElementById("pinUser").value || "Anonymous";
+
+  if(!isOwner && currentUser !== pinUser){
+    return alert("You cannot delete this pin.");
+  }
+
   try{
     await deleteDoc(doc(db,"pins",pinId));
     pin.remove();
@@ -107,6 +113,7 @@ window.deletePin = async function(el){
     console.error("Failed to delete pin:", e);
   }
 }
+
 window.collapsePin = function(el){ el.closest(".pin").classList.add("collapsed"); }
 window.expandPin = function(el){ el.closest(".pin").classList.remove("collapsed"); }
 window.toggleCommentBox = function(btn){
@@ -174,6 +181,7 @@ function addPinToBoard(text,user,likes,dislikes,id,commentsArr){
   const pin = document.createElement("div");
   pin.className="pin";
   pin.dataset.id = id;
+  pin.dataset.user = user; // store original poster
   const br = board.getBoundingClientRect();
   pin.style.top = Math.random()*(br.height-150)+"px";
   pin.style.left = Math.random()*(br.width-320)+"px";
