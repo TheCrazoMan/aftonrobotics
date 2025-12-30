@@ -246,7 +246,7 @@ footer {
 <section class="add-pin">
   <input id="pinText" placeholder="Write a pin...">
   <input id="pinUser" placeholder="Username">
-  <button onclick="addPin()">Add Pin</button>
+  <button>Add Pin</button>
 </section>
 
 <section class="pinboard" id="pinboard"></section>
@@ -257,8 +257,10 @@ footer {
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
-import { getFirestore, collection, addDoc, getDocs, query, orderBy, updateDoc, doc, arrayUnion } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
+import { getFirestore, collection, addDoc, getDocs, query, orderBy, updateDoc, doc, arrayUnion } 
+  from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
 
+// Firebase config
 const firebaseConfig = {
   apiKey: "AIzaSyC5HwENSysWyxsZ0TRq5BGZ8MdhF-NRa2A",
   authDomain: "aftonpinboard.firebaseapp.com",
@@ -268,22 +270,13 @@ const firebaseConfig = {
   appId: "1:514035393422:web:192f622b67abb500153adf"
 };
 
+// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const board = document.getElementById("pinboard");
 const isOwner = true;
 
-/* ===== Load Pins ===== */
-async function loadPins() {
-  const q = query(collection(db, "pins"), orderBy("timestamp"));
-  const snapshot = await getDocs(q);
-  snapshot.forEach(docSnap => {
-    const data = docSnap.data();
-    addPinToBoard(data.text, data.user, data.likes, data.dislikes, docSnap.id, data.comments || []);
-  });
-}
-
-/* ===== Add Pin ===== */
+/* ===== Add Pin Function ===== */
 async function addPin() {
   const text = document.getElementById("pinText").value.trim();
   const user = document.getElementById("pinUser").value.trim() || "Anonymous";
@@ -298,11 +291,26 @@ async function addPin() {
       comments: [],
       timestamp: new Date()
     });
+
     addPinToBoard(text, user, 0, 0, docRef.id, []);
     document.getElementById("pinText").value = "";
   } catch (err) {
     console.error("Error adding pin:", err);
+    alert("Failed to add pin: " + err.message);
   }
+}
+
+// Make it global so the button can call it
+window.addPin = addPin;
+
+/* ===== Load Pins from Firestore ===== */
+async function loadPins() {
+  const q = query(collection(db, "pins"), orderBy("timestamp"));
+  const snapshot = await getDocs(q);
+  snapshot.forEach(docSnap => {
+    const data = docSnap.data();
+    addPinToBoard(data.text, data.user, data.likes, data.dislikes, docSnap.id, data.comments || []);
+  });
 }
 
 /* ===== Add Pin to Board ===== */
@@ -352,17 +360,11 @@ function addPinToBoard(text, user, likes, dislikes, id, commentsArr) {
 /* ===== Mac Dots ===== */
 function deletePin(el) {
   if (!isOwner) return;
-  const pin = el.closest(".pin");
-  pin.remove();
+  el.closest(".pin").remove();
 }
 
-function collapsePin(el) {
-  el.closest(".pin").classList.add("collapsed");
-}
-
-function expandPin(el) {
-  el.closest(".pin").classList.remove("collapsed");
-}
+function collapsePin(el) { el.closest(".pin").classList.add("collapsed"); }
+function expandPin(el) { el.closest(".pin").classList.remove("collapsed"); }
 
 /* ===== Comments ===== */
 function toggleCommentBox(btn) {
@@ -438,6 +440,7 @@ function makeDraggable(pin) {
   document.onmouseup=()=>drag=false;
 }
 
+// Load pins on page load
 loadPins();
 </script>
 
