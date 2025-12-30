@@ -80,41 +80,100 @@ const firebaseConfig = {
   appId: "1:514035393422:web:192f622b67abb500153adf"
 };
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const board = document.getElementById("pinboard");
 const isOwner = true;
 
 // Add Pin
-async function addPin() {
+window.addPin = async function() {
   const text = document.getElementById("pinText").value.trim();
   const user = document.getElementById("pinUser").value.trim() || "Anonymous";
   if (!text) return;
-  const docRef = await addDoc(collection(db,"pins"),{
-    text,user,likes:0,dislikes:0,comments:[],timestamp:new Date()
-  });
+  await addDoc(collection(db,"pins"),{text,user,likes:0,dislikes:0,comments:[],timestamp:new Date()});
   document.getElementById("pinText").value="";
 }
-window.addPin = addPin;
 document.querySelector(".add-pin button").addEventListener("click", addPin);
+
+// Global functions
+window.deletePin = async function(el){
+  if(!isOwner) return;
+  const pin = el.closest(".pin");
+  const pinId = pin.dataset.id;
+  pin.remove();
+  await updateDoc(doc(db,"pins",pinId),{deleted:true}); // mark deleted in Firestore
+}
+window.collapsePin = function(el){ el.closest(".pin").classList.add("collapsed"); }
+window.expandPin = function(el){ el.closest(".pin").classList.remove("collapsed"); }
+window.toggleCommentBox = function(btn){
+  const box = btn.closest(".pin").querySelector(".comment-input");
+  box.style.display = box.style.display==="flex"?"none":"flex";
+}
+window.toggleComments = function(btn){
+  const pin = btn.closest(".pin");
+  const comments = pin.querySelector(".comments");
+  const arrow = btn.querySelector(".arrow");
+  if(comments.style.display==="flex"){comments.style.display="none"; arrow.classList.remove("up");}
+  else{comments.style.display="flex"; arrow.classList.add("up");}
+}
+window.like = async function(btn,id){
+  const span=btn.querySelector("span");
+  const newVal = parseInt(span.textContent)+1;
+  span.textContent=newVal;
+  await updateDoc(doc(db,"pins",id),{likes:newVal});
+}
+window.dislike = async function(btn,id){
+  const span=btn.querySelector("span");
+  const newVal = parseInt(span.textContent)+1;
+  span.textContent=newVal;
+  await updateDoc(doc(db,"pins",id),{dislikes:newVal});
+}
+window.addComment = async function(btn,id){
+  const pin = btn.closest(".pin");
+  const input = btn.previousElementSibling;
+  const text = input.value.trim();
+  if(!text) return;
+  const user = document.getElementById("pinUser").value || "Anonymous";
+  const commentObj = {user,text};
+  const commentsDiv = pin.querySelector(".comments");
+  const div = document.createElement("div");
+  div.className = "comment";
+  div.textContent = `${user}: ${text}`;
+  commentsDiv.appendChild(div);
+  await updateDoc(doc(db,"pins",id),{comments:arrayUnion(commentObj)});
+  input.value="";
+}
+window.sharePin = function(text){
+  if(navigator.share){
+    navigator.share({text});
+  } else {
+    prompt("Copy this text to share:", text);
+  }
+}
+window.tweetPin = function(user,text){
+  const tweet = encodeURIComponent(`From ${user} on thecrazoman.github.io/aftonrobotics: ${text}`);
+  window.open(`https://twitter.com/intent/tweet?text=${tweet}`,'_blank');
+}
 
 // Real-time listener
 onSnapshot(collection(db,"pins"), snapshot=>{
-  board.innerHTML=""; // Clear board
+  board.innerHTML="";
   snapshot.docs.forEach(docSnap=>{
     const d = docSnap.data();
+    if(d.deleted) return;
     addPinToBoard(d.text,d.user,d.likes,d.dislikes,docSnap.id,d.comments||[]);
   });
 });
 
-// Add Pin DOM
+// Add pin DOM
 function addPinToBoard(text,user,likes,dislikes,id,commentsArr){
   const pin = document.createElement("div");
   pin.className="pin";
+  pin.dataset.id = id;
   const br = board.getBoundingClientRect();
   pin.style.top = Math.random()*(br.height-150)+"px";
   pin.style.left = Math.random()*(br.width-320)+"px";
+
   pin.innerHTML=`
     <div class="pin-header">
       <div class="mac-dots">
@@ -131,8 +190,8 @@ function addPinToBoard(text,user,likes,dislikes,id,commentsArr){
       <button onclick="addComment(this,'${id}')">Post</button>
     </div>
     <div class="pin-footer">
-      <button><i class="fab fa-twitter"></i></button>
-      <button><i class="fas fa-share"></i></button>
+      <button onclick="tweetPin('${user}','${text}')"><i class="fab fa-twitter"></i></button>
+      <button onclick="sharePin('${text}')"><i class="fas fa-share"></i></button>
       <button onclick="toggleCommentBox(this)"><i class="fas fa-comment"></i></button>
       <button onclick="like(this,'${id}')"><i class="fas fa-thumbs-up"></i> <span>${likes}</span></button>
       <button onclick="dislike(this,'${id}')"><i class="fas fa-thumbs-down"></i> <span>${dislikes}</span></button>
@@ -148,56 +207,6 @@ function addPinToBoard(text,user,likes,dislikes,id,commentsArr){
   });
   board.appendChild(pin);
   makeDraggable(pin);
-}
-
-// Mac Dots
-function deletePin(el){if(isOwner)el.closest(".pin").remove();}
-function collapsePin(el){el.closest(".pin").classList.add("collapsed");}
-function expandPin(el){el.closest(".pin").classList.remove("collapsed");}
-
-// Comments
-function toggleCommentBox(btn){
-  const box=btn.closest(".pin").querySelector(".comment-input");
-  box.style.display=box.style.display==="flex"?"none":"flex";
-}
-async function addComment(btn,id){
-  const pin=btn.closest(".pin");
-  const input=btn.previousElementSibling;
-  const text=input.value.trim();
-  if(!text) return;
-  const user=document.getElementById("pinUser").value||"Anonymous";
-  const commentObj={user,text};
-  const commentsDiv=pin.querySelector(".comments");
-  const div=document.createElement("div");
-  div.className="comment";
-  div.textContent=`${user}: ${text}`;
-  commentsDiv.appendChild(div);
-  const docRef=doc(db,"pins",id);
-  await updateDoc(docRef,{comments:arrayUnion(commentObj)});
-  input.value="";
-}
-function toggleComments(btn){
-  const pin=btn.closest(".pin");
-  const comments=pin.querySelector(".comments");
-  const arrow=btn.querySelector(".arrow");
-  if(comments.style.display==="flex"){comments.style.display="none"; arrow.classList.remove("up");}
-  else{comments.style.display="flex"; arrow.classList.add("up");}
-}
-
-// Reactions
-async function like(btn,id){
-  const span=btn.querySelector("span");
-  const newVal=parseInt(span.textContent)+1;
-  span.textContent=newVal;
-  const docRef=doc(db,"pins",id);
-  await updateDoc(docRef,{likes:newVal});
-}
-async function dislike(btn,id){
-  const span=btn.querySelector("span");
-  const newVal=parseInt(span.textContent)+1;
-  span.textContent=newVal;
-  const docRef=doc(db,"pins",id);
-  await updateDoc(docRef,{dislikes:newVal});
 }
 
 // Dragging
